@@ -1,76 +1,39 @@
-# React + TypeScript + Vite
+# Celebrare Gallery
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A responsive Photo Gallery Web App built for the Celebrare Frontend Intern Pre-Screening Assignment. It fetches photos, filters them in real-time, and saves favorites locally.
 
-Currently, two official plugins are available:
+## 🎥 Video Demonstration
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+> _[5-minute screen recording link will be added here upon submission]_
 
-## React Compiler
+## 💡 Real-World Developer Considerations
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+| Consideration            | Developer Note                                                                                                            |
+| :----------------------- | :------------------------------------------------------------------------------------------------------------------------ |
+| **LocalStorage Payload** | In production, we would only save the photo `id` to keep storage small, not the entire object.                            |
+| **Loading States**       | Skeleton screens are better than spinners to prevent layout shifts (CLS), though a spinner is used here per requirements. |
+| **Search Debouncing**    | Intentionally omitted to strictly follow the assignment scope, but the code is ready for it in a real app.                |
 
-Note: This will impact Vite dev & build performances.
-You can also try [the experimental native React Compiler support in plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler) by using `compiler: true` in the plugin options instead of using the Babel plugin.
+## ✅ Rules Compliance Checklist
 
-## Expanding the ESLint configuration
+- [x] **Setup**: React + Vite + Tailwind CSS only (No extra UI libraries).
+- [x] **API**: Fetches 30 photos with Loading and Error states.
+- [x] **Grid**: Responsive (1 col mobile, 2 col tablet, 4 col desktop).
+- [x] **Search**: Real-time filtering without page reloads or new API calls.
+- [x] **Favorites**: Uses `useReducer` (no `useState`) with `localStorage` persistence.
+- [x] **Custom Hook**: `useFetchPhotos` returns exactly `{ photos, loading, error }`.
+- [x] **Performance**: `useMemo` for filtered list, `useCallback` for search handler.
+- [x] **Scope**: No extra features added.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🛠️ Tech Stack
 
-```js
-export default defineConfig([
-    globalIgnores(["dist"]),
-    {
-        files: ["**/*.{ts,tsx}"],
-        extends: [
-            // Other configs...
+- **Framework**: React 18 + TypeScript
+- **Build**: Vite
+- **Styling**: Tailwind CSS
 
-            // Remove tseslint.configs.recommended and replace with this
-            tseslint.configs.recommendedTypeChecked,
-            // Alternatively, use this for stricter rules
-            tseslint.configs.strictTypeChecked,
-            // Optionally, add this for stylistic rules
-            tseslint.configs.stylisticTypeChecked,
+## 🏃‍♂️ How to Run
 
-            // Other configs...
-        ],
-        languageOptions: {
-            parserOptions: {
-                project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-                tsconfigRootDir: import.meta.dirname,
-            },
-            // other options...
-        },
-    },
-]);
-```
-
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x";
-import reactDom from "eslint-plugin-react-dom";
-
-export default defineConfig([
-    globalIgnores(["dist"]),
-    {
-        files: ["**/*.{ts,tsx}"],
-        extends: [
-            // Other configs...
-            // Enable lint rules for React
-            reactX.configs["recommended-typescript"],
-            // Enable lint rules for React DOM
-            reactDom.configs.recommended,
-        ],
-        languageOptions: {
-            parserOptions: {
-                project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-                tsconfigRootDir: import.meta.dirname,
-            },
-            // other options...
-        },
-    },
-]);
+```bash
+npm install
+npm run dev
 ```
