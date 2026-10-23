@@ -1,12 +1,26 @@
 "use client";
 
-import { useFetchPhotos } from "@/hooks/useFetchPhotos";
-import { memo, useMemo, useState } from "react";
+import { memo, useCallback, useMemo, useReducer, useState } from "react";
+
 import { PhotoCard } from "./PhotoCard";
+
+import { useFetchPhotos, type Photo } from "@/hooks/useFetchPhotos";
+import { favoritesReducer, LOCAL_STORAGE_KEY } from "@/reducers/favoritesReducer";
 
 export const Gallery = memo(function Gallery() {
     const { photos, loading, error } = useFetchPhotos();
     const [searchTerm, setSearchTerm] = useState("");
+
+    // 2. useReducer with lazy initialization for localStorage persistence (Requirement 5)
+    const [favorites, dispatch] = useReducer(favoritesReducer, [], () => {
+        const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+        return saved ? JSON.parse(saved) : [];
+    });
+
+    // 3. useCallback for search handler (Requirement 7)
+    const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchTerm(e.target.value);
+    }, []);
 
     // Memoized filtered list for high performance
     const filteredPhotos = useMemo(() => {
@@ -15,8 +29,13 @@ export const Gallery = memo(function Gallery() {
         );
     }, [photos, searchTerm]);
 
+    const toggleFavorite = (photo: Photo) => {
+        dispatch({ type: "TOGGLE_FAVORITE", payload: photo });
+    };
+
     // Loading State
     if (loading) {
+        // Note: In-real world we are use most of time use skeleton some time use the spinner but use the skeleton for not prevents layout shifts (CLS) and improves perceived performance.
         return (
             <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
@@ -48,7 +67,7 @@ export const Gallery = memo(function Gallery() {
                         type="text"
                         placeholder="Search by author name..."
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onChange={handleSearchChange}
                         className="w-full px-4 py-2 border border-input rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
                     />
                 </div>
@@ -59,8 +78,8 @@ export const Gallery = memo(function Gallery() {
                         <PhotoCard
                             key={photo.id}
                             photo={photo}
-                            isFavorite={false}
-                            toggleFavorite={() => {}}
+                            isFavorite={favorites.some((fav) => fav.id === photo.id)}
+                            toggleFavorite={toggleFavorite}
                         />
                     ))}
                 </div>
