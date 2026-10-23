@@ -1,7 +1,9 @@
 import "./App.css";
 
+import { Gallery } from "@/components/Gallery";
+
 function App() {
-  return <></>;
+    return <Gallery />;
 }
 
 export default App;
